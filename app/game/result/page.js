@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { Suspense, useEffect, useState, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getGameResult } from "../../../actions/game.js";
 import confetti from "canvas-confetti";
@@ -146,7 +146,7 @@ function ResultDecorations() {
 }
 
 
-export default function GameResultPage() {
+function GameResultContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const sessionId = searchParams.get("sessionId");
@@ -382,4 +382,12 @@ export default function GameResultPage() {
             </div>
         </main>
     );
+}
+
+export default function GameResultPage() {
+  return (
+    <Suspense fallback={<div>LOADING RESULTS...</div>}>
+      <GameResultContent />
+    </Suspense>
+  );
 }

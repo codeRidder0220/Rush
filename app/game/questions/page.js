@@ -1,12 +1,12 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getGameQuestions, submitGameQuestion, startNextQuestionClock, } from "../../../actions/game.js";
 import QuestionCard from "../../components/game/QuestionCard.js";
 
-export default function QuestionsPage() {
+function QuestionsContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const sessionId = searchParams.get("sessionId");
@@ -245,5 +245,19 @@ export default function QuestionsPage() {
                 </div>
             </div>
         </main>
+    );
+}
+
+
+
+
+
+
+
+export default function QuestionsPage() {
+    return (
+        <Suspense fallback={<div>GETTING QUESTIONS READY...</div>}>
+            <QuestionsContent />
+        </Suspense>
     );
 }
