@@ -1,0 +1,16 @@
+
+services:
+  mongodb:
+    image: mongo:8
+    container_name: rush_mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    ports:
+      - "27017:27017"
+    volumes:
+      - rush_data:/data/db
+
+volumes:
+  rush_data:
