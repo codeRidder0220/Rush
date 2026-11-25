@@ -8,6 +8,7 @@ import connectDB from "../lib/mongodb.js";
 import User from "./models/User.js";
 import GameResult from "./models/GameResult.js";
 import Content from "./models/Content.js";
+import RushAIChat from "./components/RushAIChat";
 
 export const dynamic = "force-dynamic";
 
@@ -310,6 +311,7 @@ export default async function Home() {
           gameHistory={gameHistory}
         />
       </div>
+      <RushAIChat />
     </main>
   );
 }
