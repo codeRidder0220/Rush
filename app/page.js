@@ -253,11 +253,27 @@ export default async function Home() {
     .limit(30)
     .lean();
 
-  const forecastData = forecastResults.map((game) => ({
-    score: game.score ?? 0,
-    correct: game.correctAnswers ?? 0,
-    wrong: game.wrongAnswers ?? 0,
-    finishedAt: game.finishedAt ?? game.createdAt,
+  // Pass only JSON-safe primitives to Client Components (no Mongoose ObjectIds/Dates).
+  // Prefer canonical GameResult records; fall back to finished sessions for older/incomplete data.
+  const scoreSource = forecastResults.length ? forecastResults : forecastSessions;
+  const forecastData = scoreSource.map((game) => ({
+    score: Number(game.score ?? 0),
+    correct: Number(game.correctAnswers ?? 0),
+    wrong: Number(game.wrongAnswers ?? 0),
+    finishedAt: new Date(game.finishedAt ?? game.createdAt).toISOString(),
+  }));
+
+  const forecastSessionData = forecastSessions.map((session) => ({
+    attempts: (session.attempts ?? []).map((attempt) => ({
+      difficulty: String(attempt.difficulty ?? ""),
+      correct: Boolean(attempt.correct),
+      skipped: Boolean(attempt.skipped),
+    })),
+  }));
+
+  const ratingHistoryData = (dashboardUser?.ratingHistory ?? []).map((entry) => ({
+    rating: Number(entry.rating ?? 0),
+    playedAt: entry.playedAt ? new Date(entry.playedAt).toISOString() : null,
   }));
 
   const today = getIndiaDate(new Date());
@@ -330,9 +346,9 @@ export default async function Home() {
 
         <PerformanceForecast
           results={forecastData}
-          sessions={forecastSessions}
+          sessions={forecastSessionData}
           currentRating={dashboardUser?.rating ?? 500}
-          ratingHistory={dashboardUser?.ratingHistory ?? []}
+          ratingHistory={ratingHistoryData}
         />
 
         <DashboardPanels
