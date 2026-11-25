@@ -254,7 +254,9 @@ export default async function Home() {
     .lean();
 
   // Pass only JSON-safe primitives to Client Components (no Mongoose ObjectIds/Dates).
-  const forecastData = forecastResults.map((game) => ({
+  // Prefer canonical GameResult records; fall back to finished sessions for older/incomplete data.
+  const scoreSource = forecastResults.length ? forecastResults : forecastSessions;
+  const forecastData = scoreSource.map((game) => ({
     score: Number(game.score ?? 0),
     correct: Number(game.correctAnswers ?? 0),
     wrong: Number(game.wrongAnswers ?? 0),
