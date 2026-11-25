@@ -136,10 +136,6 @@ export default function PerformanceForecast({
           ))}
         </div>
       </div>
-
-      <p className="mt-4 text-xs text-gray-600">
-        Method: recency-weighted averages and historical variability. This is statistical forecasting, not a trained ML model. Predictions improve with more games.
-      </p>
     </section>
   );
 }
