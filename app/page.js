@@ -7,8 +7,10 @@ import { getCurrentUser } from "../lib/auth.js";
 import connectDB from "../lib/mongodb.js";
 import User from "./models/User.js";
 import GameResult from "./models/GameResult.js";
+import GameSession from "./models/GameSession.js";
 import Content from "./models/Content.js";
 import RushAIChat from "./components/RushAIChat";
+import PerformanceForecast from "./components/PerformanceForecast";
 
 export const dynamic = "force-dynamic";
 
@@ -265,6 +267,9 @@ export default async function Home() {
       : 0;
 
   void Content;
+
+  const forecastResults = await GameResult.find({ user: userId }).sort({ finishedAt: -1, createdAt: -1 }).limit(30).lean();
+  const forecastSessions = await GameSession.find({ user: userId, status: "finished" }).sort({ finishedAt: -1 }).limit(30).select("attempts questionTime").lean();
 
   const historyResults = await GameResult.find({ user: userId })
     .populate("content", "title")
