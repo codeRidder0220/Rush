@@ -328,6 +328,13 @@ export default async function Home() {
           </div>
         </section>
 
+        <PerformanceForecast
+          results={forecastData}
+          sessions={forecastSessions}
+          currentRating={dashboardUser?.rating ?? 500}
+          ratingHistory={dashboardUser?.ratingHistory ?? []}
+        />
+
         <DashboardPanels
           leaderboardUsers={topPlayers}
           gameHistory={gameHistory}
