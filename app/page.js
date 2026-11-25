@@ -9,6 +9,8 @@ import User from "./models/User.js";
 import GameResult from "./models/GameResult.js";
 import Content from "./models/Content.js";
 import RushAIChat from "./components/RushAIChat";
+import PerformanceForecast from "./components/PerformanceForecast";
+import GameSession from "./models/GameSession.js";
 
 export const dynamic = "force-dynamic";
 
@@ -219,7 +221,7 @@ export default async function Home() {
 
   // Fresh user data MongoDB se lo
   const dashboardUser = await User.findById(userId)
-    .select("bestScore dailyStreak lastStreakDate maxStreak")
+    .select("bestScore dailyStreak lastStreakDate maxStreak rating ratingHistory")
     .lean();
 
   // India timezone ki date hamesha YYYY-MM-DD format me
@@ -237,6 +239,26 @@ export default async function Home() {
 
     return `${year}-${month}-${day}`;
   }
+
+  const forecastResults = await GameResult.find({ user: userId })
+    .sort({ finishedAt: -1, createdAt: -1 })
+    .limit(30)
+    .lean();
+
+  const forecastSessions = await GameSession.find({
+    user: userId,
+    status: "finished",
+  })
+    .sort({ finishedAt: -1 })
+    .limit(30)
+    .lean();
+
+  const forecastData = forecastResults.map((game) => ({
+    score: game.score ?? 0,
+    correct: game.correctAnswers ?? 0,
+    wrong: game.wrongAnswers ?? 0,
+    finishedAt: game.finishedAt ?? game.createdAt,
+  }));
 
   const today = getIndiaDate(new Date());
 
@@ -305,6 +327,13 @@ export default async function Home() {
             />
           </div>
         </section>
+
+        <PerformanceForecast
+          results={forecastData}
+          sessions={forecastSessions}
+          currentRating={dashboardUser?.rating ?? 500}
+          ratingHistory={dashboardUser?.ratingHistory ?? []}
+        />
 
         <DashboardPanels
           leaderboardUsers={topPlayers}
