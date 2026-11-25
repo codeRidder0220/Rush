@@ -97,7 +97,7 @@ export default function RushAIChat() {
       `}</style>
 
       {isOpen && (
-        <div className="rush-ai-window mb-3 flex h-[440px] w-[min(350px,calc(100vw-40px))] flex-col overflow-hidden rounded-2xl border-2 border-black bg-white shadow-[5px_5px_0_#111]">
+        <div className="rush-ai-window mb-3 flex h-110 w-[min(350px,calc(100vw-40px))] flex-col overflow-hidden rounded-2xl border-2 border-black bg-white shadow-[5px_5px_0_#111]">
           <div className="flex items-center justify-between border-b-2 border-black bg-[#ffd23f] p-4">
             <div>
               <h2 className="text-lg font-black">🤖 RUSH AI</h2>
@@ -125,7 +125,7 @@ export default function RushAIChat() {
             {messages.map((item, index) => (
               <div
                 key={index}
-                className={`max-w-[90%] whitespace-pre-wrap break-words rounded-xl p-3 text-sm ${
+                className={`max-w-[90%] whitespace-pre-wrap wrap-break-words rounded-xl p-3 text-sm ${
                   item.role === "user"
                     ? "ml-auto bg-[#b6ff00]"
                     : "mr-auto bg-[#fff0c2]"
